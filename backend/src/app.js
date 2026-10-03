@@ -46,7 +46,7 @@ app.use('/otp',Otp);
 const googleAuth = require('./googleAuth');
 app.use('/auth', googleAuth);
 
-const port = process.env.PORT || 8890;
+const port = process.env.PORT || 10000;
 
 // Serve the frontend build
 app.use(express.static(path.join(__dirname, '../../frontend/dist')));
@@ -56,6 +56,6 @@ app.use((req, res) => {
   res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
 });
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   console.log(`Server running on port ${port}`);
 });

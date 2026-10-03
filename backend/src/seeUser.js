@@ -32,4 +32,20 @@ router.get('/check-username', (req, res) => {
     });
 });
 
+// GET /seeuser/check-email?email=xxx — check if an email is available
+router.get('/check-email', (req, res) => {
+    const { email } = req.query;
+    if (!email || !email.includes('@')) {
+        return res.status(400).json({ available: false, message: 'Invalid email format' });
+    }
+    const sql = 'SELECT email FROM user WHERE email = ?';
+    conn.query(sql, [email], (err, result) => {
+        if (err) {
+            console.error('Email check failed:', err.message);
+            return res.status(500).json({ message: 'Database error' });
+        }
+        res.status(200).json({ available: result.length === 0 });
+    });
+});
+
 module.exports = router;

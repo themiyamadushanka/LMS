@@ -44,6 +44,39 @@ function Signup() {
   const [usernameMessage, setUsernameMessage] = useState('');
   const debounceRef = useRef(null);
 
+  // Email availability
+  const [emailStatus, setEmailStatus] = useState('idle');
+  const [emailMessage, setEmailMessage] = useState('');
+  const emailDebounceRef = useRef(null);
+
+  // Live email availability check with debounce
+  const checkEmail = useCallback(async (value) => {
+    if (!value || !value.includes('@')) {
+      setEmailStatus('idle');
+      setEmailMessage('');
+      return;
+    }
+
+    setEmailStatus('checking');
+    setEmailMessage('');
+
+    try {
+      const res = await fetch(`${import.meta.env.PROD ? '' : 'http://localhost:8890'}/seeuser/check-email?email=${encodeURIComponent(value)}`);
+      const data = await res.json();
+
+      if (data.available) {
+        setEmailStatus('available');
+        setEmailMessage('Email is available!');
+      } else {
+        setEmailStatus('taken');
+        setEmailMessage('Email is already registered');
+      }
+    } catch {
+      setEmailStatus('error');
+      setEmailMessage('Could not check availability');
+    }
+  }, []);
+
   // Live username availability check with debounce
   const checkUsername = useCallback(async (value) => {
     if (!value || value.length < 3) {
@@ -88,6 +121,22 @@ function Signup() {
     return () => clearTimeout(debounceRef.current);
   }, [username, checkUsername]);
 
+  useEffect(() => {
+    if (emailDebounceRef.current) clearTimeout(emailDebounceRef.current);
+
+    if (!email || !email.includes('@')) {
+      setEmailStatus('idle');
+      setEmailMessage('');
+      return;
+    }
+
+    emailDebounceRef.current = setTimeout(() => {
+      checkEmail(email);
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(emailDebounceRef.current);
+  }, [email, checkEmail]);
+
   // Form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -110,6 +159,11 @@ function Signup() {
 
     if (usernameStatus === 'taken') {
       setError('Please choose a different username.');
+      return;
+    }
+
+    if (emailStatus === 'taken') {
+      setError('This email is already registered. Please log in.');
       return;
     }
 
@@ -169,6 +223,14 @@ function Signup() {
     usernameStatus === 'taken' ? 'username-taken' : '',
   ].filter(Boolean).join(' ');
 
+  // Determine input wrap class for email
+  const emailWrapClass = [
+    'input-wrap',
+    'username-status-wrap',
+    emailStatus === 'available' ? 'username-available' : '',
+    emailStatus === 'taken' ? 'username-taken' : '',
+  ].filter(Boolean).join(' ');
+
   return (
     <div className="login-shell">
       {/* Animated background blobs */}
@@ -213,10 +275,10 @@ function Signup() {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="login-form" noValidate>
-          {/* Email */}
+          {/* Email with live check */}
           <div className="login-field">
             <label htmlFor="login-email">Email</label>
-            <div className="input-wrap">
+            <div className={emailWrapClass}>
               <span className="input-icon">✉️</span>
               <input
                 id="login-email"
@@ -228,7 +290,25 @@ function Signup() {
                 autoComplete="email"
                 autoFocus
               />
+              {/* Status indicator */}
+              <div className="username-status-indicator">
+                {emailStatus === 'checking' && (
+                  <span className="username-spinner" />
+                )}
+                {emailStatus === 'available' && (
+                  <span className="username-check available">✓</span>
+                )}
+                {emailStatus === 'taken' && (
+                  <span className="username-check taken">✗</span>
+                )}
+              </div>
             </div>
+            {/* Hint text */}
+            {emailMessage && (
+              <span className={`username-hint ${emailStatus}`}>
+                {emailMessage}
+              </span>
+            )}
           </div>
 
           {/* Username with live check */}
@@ -318,7 +398,7 @@ function Signup() {
             id="login-submit-btn"
             type="submit"
             className={`login-btn ${loading ? 'loading' : ''}`}
-            disabled={loading || usernameStatus === 'taken'}
+            disabled={loading || usernameStatus === 'taken' || emailStatus === 'taken'}
           >
             {loading ? (
               <>

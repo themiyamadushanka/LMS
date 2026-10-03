@@ -19,8 +19,15 @@ app.use(passport.initialize());
 app.use(passport.session());
 const path = require('path');
 
+const allowedOrigins = ['http://localhost:8891', 'https://lms-1-3thk.onrender.com'];
 app.use(cors({
-  origin: 'http://localhost:8891',
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
 

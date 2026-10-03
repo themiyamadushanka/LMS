@@ -53,6 +53,9 @@ app.use('/otp',Otp);
 const googleAuth = require('./googleAuth');
 app.use('/auth', googleAuth);
 
+const seed = require('./seed');
+app.use('/dev-seed-courses', seed);
+
 const port = process.env.PORT || 10000;
 
 // Serve the frontend build

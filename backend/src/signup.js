@@ -19,9 +19,23 @@ router.post("/", async (req, res) => {
         if (!email || !sid || !password) {
             return res.status(400).json({ message: "All fields are required" });
         }
-        // Save user data temporarily in Redis with email as key (matches verifyOTP)
-        await redis.set(`signup:${email}`, { email, sid, password }, { ex: 600 });
-        res.status(200).json({ message: "User data saved temporarily" });
+        // Check if email or username already exists in database
+        conn.query('SELECT * FROM user WHERE email = ? OR sid = ?', [email, sid], async (err, result) => {
+            if (err) {
+                return res.status(500).json({ message: "Database error" });
+            }
+            if (result && result.length > 0) {
+                const isEmailTaken = result.some(user => user.email === email);
+                if (isEmailTaken) {
+                    return res.status(400).json({ message: "This email is already registered. Please log in." });
+                }
+                return res.status(400).json({ message: "Username is already taken" });
+            }
+
+            // Save user data temporarily in Redis with email as key (matches verifyOTP)
+            await redis.set(`signup:${email}`, { email, sid, password }, { ex: 600 });
+            res.status(200).json({ message: "User data saved temporarily" });
+        });
     } catch (err) {
         console.error("Signup error:", err);
         res.status(500).json({ message: "Server error" });

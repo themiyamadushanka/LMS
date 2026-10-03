@@ -15,7 +15,9 @@ router.get(
 /* Callback route for OAuth2 authentication */
 router.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: "http://localhost:8891/" }),
+  passport.authenticate("google", { 
+    failureRedirect: process.env.NODE_ENV === "production" ? "/" : "http://localhost:8891/" 
+  }),
   function (req, res) {
     // Successful authentication
     console.log("Google Auth Success, User:", req.user);
@@ -35,7 +37,7 @@ router.get(
       });
 
       // Redirect back to the frontend app (courses page)
-      res.redirect("http://localhost:8891/allcourses");
+      res.redirect(process.env.NODE_ENV === "production" ? "/allcourses" : "http://localhost:8891/allcourses");
     });
   }
 );

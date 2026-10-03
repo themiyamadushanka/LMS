@@ -40,7 +40,7 @@ router.post('', async (req, res) => {
               <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="max-width:480px;width:100%;background:#ffffff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);overflow:hidden;">
                 <tr>
                   <td style="background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);padding:32px 40px;text-align:center;">
-                    <img src="${process.env.RENDER ? 'https://lms-1-3thk.onrender.com' : 'http://localhost:' + (process.env.PORT || 8890)}/logo.jpg" alt="OMIXELO" width="140" style="display:block;margin:0 auto 10px;max-width:140px;height:auto;" />
+                    <img src="${process.env.NODE_ENV === 'production' ? 'https://lms-1-3thk.onrender.com' : 'http://localhost:' + (process.env.PORT || 8890)}/logo.jpg" alt="OMIXELO" width="140" style="display:block;margin:0 auto 10px;max-width:140px;height:auto;" />
                     <p style="margin:6px 0 0;color:rgba(255,255,255,0.6);font-size:12px;letter-spacing:2px;text-transform:uppercase;">Verification</p>
                   </td>
                 </tr>

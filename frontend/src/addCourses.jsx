@@ -59,7 +59,7 @@ function AddCourses({ onAuthError }) {
 		const token = getCookie('auth_token')
 		try {
 			setProgress(45)
-			const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8890'}/seeuser`, {
+			const response = await fetch(`${import.meta.env.PROD ? '' : 'http://localhost:8890'}/seeuser`, {
 				headers: { 'Authorization': token || '' },
 			})
 			setProgress(75)
@@ -89,7 +89,7 @@ function AddCourses({ onAuthError }) {
 		setError('')
 		const token = getCookie('auth_token')
 		try {
-			const url = `${import.meta.env.VITE_API_URL || 'http://localhost:8890'}/encrollcourse/mycourses?SID=${encodeURIComponent(sid)}`
+			const url = `${import.meta.env.PROD ? '' : 'http://localhost:8890'}/encrollcourse/mycourses?SID=${encodeURIComponent(sid)}`
 			const response = await fetch(url, {
 				headers: { 'Authorization': token || '' },
 			})
@@ -165,7 +165,7 @@ function AddCourses({ onAuthError }) {
 		setError('')
 		const token = getCookie('auth_token')
 		try {
-			const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8890'}/encrollcourse/addcourse`, {
+			const response = await fetch(`${import.meta.env.PROD ? '' : 'http://localhost:8890'}/encrollcourse/addcourse`, {
 				method: 'POST',
 				headers: {
 					'Authorization': token || '',

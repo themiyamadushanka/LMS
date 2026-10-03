@@ -25,7 +25,7 @@ function Quiz() {
     const [data, setData] = useState([]);
 
 	useEffect(() => {
-		fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8890'}/course/1/1`)
+		fetch(`${import.meta.env.PROD ? '' : 'http://localhost:8890'}/course/1/1`)
 			.then((response) => {
 				if (!response.ok) {
 					throw new Error(`Course request failed: ${response.status}`)

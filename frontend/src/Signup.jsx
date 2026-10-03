@@ -56,7 +56,7 @@ function Signup() {
     setUsernameMessage('');
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8890'}/seeuser/check-username?username=${encodeURIComponent(value)}`);
+      const res = await fetch(`${import.meta.env.PROD ? '' : 'http://localhost:8890'}/seeuser/check-username?username=${encodeURIComponent(value)}`);
       const data = await res.json();
 
       if (data.available) {
@@ -117,7 +117,7 @@ function Signup() {
 
     try {
       // 1. Temporarily save user data in Redis
-      const signupRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8890'}/signup`, {
+      const signupRes = await fetch(`${import.meta.env.PROD ? '' : 'http://localhost:8890'}/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, sid: username, password }),
@@ -132,7 +132,7 @@ function Signup() {
       }
 
       // 2. Request OTP to be sent to the email
-      const otpRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8890'}/otp`, {
+      const otpRes = await fetch(`${import.meta.env.PROD ? '' : 'http://localhost:8890'}/otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -156,7 +156,7 @@ function Signup() {
   };
 
   const handleGoogleSignup = () => {
-    window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:8890'}/auth/google`;
+    window.location.href = `${import.meta.env.PROD ? '' : 'http://localhost:8890'}/auth/google`;
   };
 
   const passwordStrength = getPasswordStrength(password);
@@ -181,7 +181,7 @@ function Signup() {
       <div className="login-card">
         {/* Brand / Logo */}
         <div className="login-brand">
-          <img src={`${import.meta.env.VITE_API_URL || 'http://localhost:8890'}/logo.jpg`} alt="Omixelo Logo" className="brand-logo-img" />
+          <img src={`${import.meta.env.PROD ? '' : 'http://localhost:8890'}/logo.jpg`} alt="Omixelo Logo" className="brand-logo-img" />
           <div>
             <h1 className="login-title">Create account</h1>
             <p className="login-subtitle">Join us and start your journey</p>

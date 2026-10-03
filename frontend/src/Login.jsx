@@ -16,7 +16,7 @@ function Login({ onLogin }) {
     setLoading(true);
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8890'}/login`, {
+      const res = await fetch(`${import.meta.env.PROD ? '' : 'http://localhost:8890'}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user, pass }),
@@ -58,7 +58,7 @@ function Login({ onLogin }) {
       <div className="login-card">
         {/* Logo / Brand */}
         <div className="login-brand">
-          <img src={`${import.meta.env.VITE_API_URL || 'http://localhost:8890'}/logo.jpg`} alt="Omixelo Logo" className="brand-logo-img" />
+          <img src={`${import.meta.env.PROD ? '' : 'http://localhost:8890'}/logo.jpg`} alt="Omixelo Logo" className="brand-logo-img" />
           <div>
             <h1 className="login-title">OMIXELO</h1>
             <p className="login-subtitle">Sign in to your account</p>
@@ -141,7 +141,7 @@ function Login({ onLogin }) {
           <button
             type="button"
             className="google-btn"
-            onClick={() => window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:8890'}/auth/google`}
+            onClick={() => window.location.href = `${import.meta.env.PROD ? '' : 'http://localhost:8890'}/auth/google`}
           >
             <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="google-icon" />
             Sign in with Google

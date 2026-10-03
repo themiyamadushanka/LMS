@@ -88,7 +88,7 @@ function ConfirmOTP() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8890'}/signup/verifyOTP`, {
+      const res = await fetch(`${import.meta.env.PROD ? '' : 'http://localhost:8890'}/signup/verifyOTP`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, otp: otpString }),
@@ -119,7 +119,7 @@ function ConfirmOTP() {
 
       <div className="login-card">
         <div className="login-brand">
-          <img src={`${import.meta.env.VITE_API_URL || 'http://localhost:8890'}/logo.jpg`} alt="Omixelo Logo" className="brand-logo-img" />
+          <img src={`${import.meta.env.PROD ? '' : 'http://localhost:8890'}/logo.jpg`} alt="Omixelo Logo" className="brand-logo-img" />
           <h1 className="login-title">Verify your email</h1>
           <p className="login-subtitle">
             We sent a 6-digit verification code to<br />
